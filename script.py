@@ -9,21 +9,29 @@ class ConversionException(Exception):
 class Converter:
     @staticmethod
     def convert(first_Value: str, type_of_operation: str, second_value: str, system: str):
-        if not first_Value.isdigit():
+        try:
+            float(first_Value)
+        except ValueError:
             raise ConversionException("значение указано некорректно!")
         if type_of_operation != "add" and type_of_operation != "subtract" and type_of_operation and "multiply" and type_of_operation != "divide":
             raise ConversionException("Тип операции указан некорректно!")
-        if not second_value.isdigit():
-            raise ConversionException("Второе значение указано некорректно!")
+        try:
+            float(second_value)
+        except ValueError:
+            raise ConversionException("второе значение указано некорректно!")
         if int(system) < 2:
             raise ConversionException("Система счисления указана некорректно!")
 
         for i in first_Value:
-            if int(i) >= int(system):
+            if i == ".":
+                continue
+            if float(i) >= int(system):
                 raise ConversionException(f"{i} не может использоваться в этой системе счисления!")
 
         for i in second_value:
-            if int(i) >= int(system):
+            if i == ".":
+                continue
+            if float(i) >= int(system):
                 raise ConversionException(f"{i} не может использоваться в этой системе счисления!")
 
         url = f'https://numsys.ru/calculate/{first_Value}/{type_of_operation}/{second_value}/{system}'
