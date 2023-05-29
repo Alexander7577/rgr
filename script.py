@@ -9,11 +9,16 @@ class ConversionException(Exception):
 class Converter:
     @staticmethod
     def convert(first_Value: str, type_of_operation: str, second_value: str, system: str):
+        if ',' in first_Value:
+            first_Value = first_Value.replace(",", ".")
+        if ',' in second_value:
+            second_value = second_value.replace(",", ".")
+
         try:
             float(first_Value)
         except ValueError:
             raise ConversionException("значение указано некорректно!")
-        if type_of_operation != "add" and type_of_operation != "subtract" and type_of_operation and "multiply" and type_of_operation != "divide":
+        if type_of_operation != "add" and type_of_operation != "subtract" and type_of_operation != "multiply" and type_of_operation != "divide":
             raise ConversionException("Тип операции указан некорректно!")
         try:
             float(second_value)
@@ -24,6 +29,8 @@ class Converter:
 
         for i in first_Value:
             if i == ".":
+                continue
+            if i == "-":
                 continue
             if float(i) >= int(system):
                 raise ConversionException(f"{i} не может использоваться в этой системе счисления!")
@@ -56,6 +63,8 @@ class Operations:
         print("     y - вид операции     ")
         print("    z - второе значение   ")
         print("   w - система счисления  ")
+        print("        Чтобы выйти       ")
+        print("         введите q        ")
         print("==========================")
         print()
 
@@ -74,16 +83,20 @@ class Operations:
 
 
 Operations.greating()
-data = input().split()
-try:
-    if len(data) != 4:
-        raise ConversionException("Неправильный формат ввода!")
-    first_Value, type_of_operation, second_value, system = data
-    type_of_operation = Operations.fix_operation(type_of_operation)
+while True:
+    data = input().split()
+    if data == ['q']:
+        break
+    try:
+        if len(data) != 4:
+            raise ConversionException("Неправильный формат ввода!")
+        first_Value, type_of_operation, second_value, system = data
+        type_of_operation = Operations.fix_operation(type_of_operation)
 
-    result = Converter.convert(first_Value, type_of_operation, second_value, system)
-    print(result)
-except ConversionException as e:
-    print(f"Ошибка пользователя, \n{e}")
-except Exception:
-    print(f"не удаётся обработать запрос, попробуйте позже=(")
+        result = Converter.convert(first_Value, type_of_operation, second_value, system)
+        print(result)
+    except ConversionException as e:
+        print(f"Ошибка пользователя, \n{e}")
+    except Exception:
+        print(f"не удаётся обработать запрос, попробуйте позже=(")
+        
